@@ -5,6 +5,8 @@ class SnakeGame extends AGame {
 
 
         this.snake = new Snake();
+        this.food = new Food();
+        this.food.respawn(this.snake);
     }
 
 
@@ -32,13 +34,32 @@ class SnakeGame extends AGame {
     }
 
 
+    // Appeler la bonne fonction pour tourner à gauche ou
+    // à droite en fonction de la touche appuyée
+    keyDown(keyCode){
+        if(keyCode === 39)
+            this.snake.turnRight();
+
+        if(keyCode === 37)
+            this.snake.turnLeft();
+    }
+
+
     update() {
         this.snake.forward();
+
+        // Faire grandir le serpent et bouger la pomme
+        if (this.snake.isPointOnHead(this.food.pos)) {
+            this.snake.grow();
+            this.food.respawn(this.snake);
+            console.log("miam");
+        }
     }
 
 
     draw() {
         this.context.clearRect(0, 0, canvas.width, canvas.height);
         this.snake.renderTo(this.context);
+        this.food.renderTo(this.context);
     }
 }
