@@ -6,6 +6,8 @@ class SnakeGame extends AGame {
 
         this.snake = new Snake();
         this.food = new Food();
+        this.score = new ScoreText();
+
         this.food.respawn(this.snake);
     }
 
@@ -46,22 +48,45 @@ class SnakeGame extends AGame {
 
 
     update() {
-        if(!this.snake.forward()){
-            this._hideCanvas();
-            this._showCanvas();
-        }
+        if(!this.snake.forward())
+            this.destroy();
 
         // Faire grandir le serpent et bouger la pomme
         if (this.snake.isPointOnHead(this.food.pos)) {
             this.snake.grow();
             this.food.respawn(this.snake);
+            this.score.inc();
         }
     }
 
+   onDestroy() {
+        const lastScore = this.score.getScore();
+        localStorage.setItem("last_score", lastScore);
+        StartScreenManager.updateLastScore(lastScore);
+
+
+        // Enregistrer le meilleur score dans le localStorage de
+        // la même manière que pour le dernier score ci dessus.
+        // Appeler l'element "best_score" dans le localStorage.
+        // Pensez également à mettre à jour le StartScreenManager.
+
+        const bestScore = localStorage.getItem("best_score");
+        //console.log("lastScore:" + lastScore + " bestScore:" + bestScore);
+
+        if(lastScore > bestScore){
+            var newBestScore = lastScore;
+            localStorage.setItem("best_score", newBestScore);
+        }
+        StartScreenManager.updateBestScore(newBestScore);
+
+        this._hideCanvas();
+        this._showStartMenu();
+   }
 
     draw() {
         this.context.clearRect(0, 0, canvas.width, canvas.height);
         this.snake.renderTo(this.context);
         this.food.renderTo(this.context);
+        this.score.renderTo(this.context);
     }
 }
