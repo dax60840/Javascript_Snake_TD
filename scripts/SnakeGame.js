@@ -46,13 +46,15 @@ class SnakeGame extends AGame {
 
 
     update() {
-        this.snake.forward();
+        if(!this.snake.forward()){
+            this._hideCanvas();
+            this._showCanvas();
+        }
 
         // Faire grandir le serpent et bouger la pomme
         if (this.snake.isPointOnHead(this.food.pos)) {
             this.snake.grow();
             this.food.respawn(this.snake);
-            console.log("miam");
         }
     }
 

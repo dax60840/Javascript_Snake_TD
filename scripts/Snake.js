@@ -40,11 +40,13 @@ class Snake {
         const head = this._getHead();
         const newHead = {x: head.x + delta.x, y: head.y + delta.y};
 
-        if(this.isPointOnBody(newHead))
-            console.log("perdu");
+        if(this.isPointOnBody(newHead)){
+            return false;
+        }
 
         this._spawnNewHead(newHead);
         this._popOldTail();
+        return true;
     }
 
 
